@@ -22,7 +22,7 @@ public class PostFixEval
     private Stack<Double> opperandStack;
     private Stack<Character> opperatorStacK;
     /** The precedence of the operators mathces the order in Operators */
-    private static final int[] PRECENDENCE = {1,2,3,3,4,4,4};
+    private static final int[] PRECENDENCE = {1,1,5,3,3,4,4,4};
     /** Postfix string */
     private StringBuilder postfix;
     
@@ -103,7 +103,7 @@ public class PostFixEval
     }
     
     public String convertToParen(String s){
-        String ex;
+        String ex = "";
         for(int i = 0; i < s.length();i++){
             if(s.charAt(i) == '['){
                 ex += "(";
@@ -114,19 +114,20 @@ public class PostFixEval
             }else if(s.charAt(i) =='}'){
                 ex += ")";
             }else{
-                ex += i;
+                ex += ex.charAt(i);
             }
        
         }
+        return ex;
     }
     
-    
-    public Double eval(String expression) throws SyntaxErrorException{
+    //throws SyntaxErrorException
+    public Double eval(String expression) throws SyntaxErrorException {
         //create an empty stack
         opperandStack = new Stack<Double>();
         opperatorStacK = new Stack<Character>();
         char topOp = opperatorStacK.peek();
-        char op;
+        char op ;
         double rhs;
         double lhs;
         
@@ -134,6 +135,7 @@ public class PostFixEval
         String[] tokens = expression.split("\\s+");
         if(!wellBalanced(expression)){
             throw new SyntaxErrorException("Expression is not balanced Exception");
+            
         }
         try{
             for(String nextToken : tokens){
@@ -151,12 +153,25 @@ public class PostFixEval
                     if(!opperatorStacK.isEmpty()){
                         opperandStack.push(result);
                     }else{
-                        if((precedence(op) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                               while((precedence(op) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                        if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                               while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
                                    double res = evalOp(opperatorStacK.peek());
                                    opperandStack.pop();
                                    opperandStack.pop();
                                    opperandStack.push(res);
+                                }
+                                
+                               while(firstChar == ')'){
+                                    if(topOp != '('){
+                                        double res = evalOp(opperatorStacK.peek());
+                                        opperandStack.pop();
+                                        opperandStack.pop();
+                                        opperandStack.push(res);
+                                    }
+                                    
+                                    if(topOp == '('){
+                                        opperandStack.pop();
+                                    }
                                 }
                           }else{
                               //pop a;; stacked p[eratprs wotj equla or higher precedence than op
@@ -186,44 +201,10 @@ public class PostFixEval
     }
     
     
-    public double evaluate(String s){
-        //create an empty stack
-        opperandStack = new Stack<Double>();
-        opperatorStacK = new Stack<Character>();
-        char topOp = opperatorStacK.peek();
-        double rhs;
-        double lhs;
-        
-        //process each token
-        String[] tokens = s.split("\\s+");
-        if(!wellBalanced(s)){
-            throw new SyntaxErrorException("Expression is not balanced Exception");
-        }else{
-            convertToParen(s);
-        }
-        
-        try{
-            char firstChar;
-            for(int i = 0; i < s.length();i++){
-                firstChar = s.charAt(i);
-                if(Character.isDigit(firstChar)){
-                    opperandStack.push((double)(firstChar));
-                }else if(firstChar.contains(OPERATORS)){
-                    if(!opperatorStacK.isEmpty && (precedence(op) > precedence(topOp))){
-                        while(!opperatorStacK.isEmpty && (precedence(op) > precedence(topOp))){
-                           evalOp(firstChar); 
-                        }
-                    }
-                }
-            }
-        }catch(EmptyStackException ex){
-
-        }
-    }
     public static void main(String[] args){
-        String s =  "(5*7)+(3+3)";
+        String s =  "{(5*7)+[7+(3+3)]}";
         String b = "(5*7+(3+3";
-        System.out.println((new PostFixEval()).wellBalanced(s));
-        (new PostFixEval()).eval("5*6");
+        System.out.println((new PostFixEval()).convertToParen(s));
+        //(new PostFixEval()).eval("5*6");
     }
 }
