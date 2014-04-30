@@ -1,4 +1,3 @@
-
 /**
  * Write a description of class PostFixEval here.
  * 
@@ -114,9 +113,8 @@ public class PostFixEval
             }else if(s.charAt(i) =='}'){
                 ex += ")";
             }else{
-                ex += ex.charAt(i);
+                ex += "" + s.charAt(i);
             }
-       
         }
         return ex;
     }
@@ -126,16 +124,13 @@ public class PostFixEval
         //create an empty stack
         opperandStack = new Stack<Double>();
         opperatorStacK = new Stack<Character>();
-        char topOp = opperatorStacK.peek();
-        char op ;
-        double rhs;
-        double lhs;
+        char topOp;
+        
         
         //process each token
         String[] tokens = expression.split("\\s+");
         if(!wellBalanced(expression)){
             throw new SyntaxErrorException("Expression is not balanced Exception");
-            
         }
         try{
             for(String nextToken : tokens){
@@ -146,37 +141,39 @@ public class PostFixEval
                     Double value = Double.parseDouble(nextToken);
                     //push value onto opperand stack
                     opperandStack.push(value);
-                }else if (isOperator(firstChar)){
+                }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
                     //Eval the operator
                     double result = evalOp(firstChar);
                     //push result onto the opperand stack
                     if(!opperatorStacK.isEmpty()){
-                        opperandStack.push(result);
-                    }else{
-                        if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                               while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                                   double res = evalOp(opperatorStacK.peek());
-                                   opperandStack.pop();
-                                   opperandStack.pop();
-                                   opperandStack.push(res);
-                                }
-                                
-                               while(firstChar == ')'){
-                                    if(topOp != '('){
-                                        double res = evalOp(opperatorStacK.peek());
-                                        opperandStack.pop();
-                                        opperandStack.pop();
-                                        opperandStack.push(res);
-                                    }
-                                    
-                                    if(topOp == '('){
-                                        opperandStack.pop();
-                                    }
-                                }
-                          }else{
-                              //pop a;; stacked p[eratprs wotj equla or higher precedence than op
-                
-                          }
+                        //opperandStack.push(result);
+                    //}else{
+                    if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                           while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                               double res = evalOp(opperatorStacK.peek());
+                               opperandStack.pop();
+                               opperandStack.pop();
+                               opperandStack.push(res);
+                            }
+                      }else{
+                          //pop a;; stacked p[eratprs wotj equla or higher precedence than op
+            
+                      }
+                    }
+                }else if(isOperator(firstChar) && firstChar == '('){
+                    opperatorStacK.push(firstChar);
+                }else if(isOperator(firstChar) && firstChar == ')'){
+                    while(firstChar != '('){
+                        if(topOp != '('){
+                            double res = evalOp(firstChar);
+                            opperandStack.pop();
+                            opperandStack.pop();
+                            opperandStack.push(res);
+                        }
+                    }
+                    
+                    if(topOp == '('){
+                        opperandStack.pop();
                     }
                 }else{
                     //invalid character
@@ -189,6 +186,7 @@ public class PostFixEval
             Double answer = opperandStack.pop();
             //opperand stack should be empty
             if(opperandStack.empty()){
+                System.out.println(answer);
                 return answer;
             }else{
                 //indicate error
@@ -203,8 +201,18 @@ public class PostFixEval
     
     public static void main(String[] args){
         String s =  "{(5*7)+[7+(3+3)]}";
+        String s1 =  "{[5*7]+[7+(3+3)]}";
+        String s2 =  "{{5*7}+[7+(3+3)]}";
         String b = "(5*7+(3+3";
         System.out.println((new PostFixEval()).convertToParen(s));
+        System.out.println((new PostFixEval()).convertToParen(s1));
+        System.out.println((new PostFixEval()).convertToParen(s2));
         //(new PostFixEval()).eval("5*6");
+        
+        try{
+            (new PostFixEval()).eval("5*6");
+        }catch(SyntaxErrorException e){
+            
+        }
     }
 }
