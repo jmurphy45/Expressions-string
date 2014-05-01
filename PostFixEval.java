@@ -141,10 +141,9 @@ public class PostFixEval
             for(String nextToken : tokens){
                 char firstChar = nextToken.charAt(0);
                 //does it start with a digit?
-                
                 //topOp = opperatorStacK.peek();
                 
-                if(Character.isDigit(firstChar)){
+                if(Character.isDigit(firstChar) && !isOperator(firstChar)){
                     //get double value
                     Double value = Double.parseDouble(nextToken);
                     //push value onto opperand stack
@@ -157,8 +156,8 @@ public class PostFixEval
                     topOp = opperatorStacK.peek();
                     //push result onto the opperand stack
                     if(!opperatorStacK.isEmpty()){
-                        //opperandStack.push(result);
-                    //}else{
+                        opperandStack.push(result);
+                    }else{
                     if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
                            while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
                                double res = evalOp(opperatorStacK.peek());
@@ -221,7 +220,7 @@ public class PostFixEval
         String s2 =  "{{5*7}+[7+(3+3)]}";
         
         try{
-            System.out.println((new PostFixEval()).eval("8.0*(9-2)"));
+            System.out.println((new PostFixEval()).eval("8 * (9 - 2 )"));
         }catch(SyntaxErrorException e){
             System.out.println("Error");
         }
