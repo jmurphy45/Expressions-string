@@ -1,4 +1,3 @@
-
 /**
  * Write a description of class PostFixEval here.
  * 
@@ -173,7 +172,11 @@ public class PostFixEval
                             opperandStack.push(res);
                         }
                     }
+<<<<<<< HEAD
                     topOp = opperatorStacK.peek();
+=======
+                    
+>>>>>>> FETCH_HEAD
                     if(topOp == '('){
                         opperandStack.pop();
                     }
@@ -209,6 +212,10 @@ public class PostFixEval
         System.out.println((new PostFixEval()).convertToParen(s));
         System.out.println((new PostFixEval()).convertToParen(s1));
         System.out.println((new PostFixEval()).convertToParen(s2));
+<<<<<<< HEAD
+=======
+        //(new PostFixEval()).eval("5*6");
+>>>>>>> FETCH_HEAD
         
         try{
             (new PostFixEval()).eval("5*6");
