@@ -1,10 +1,16 @@
 #BlueJ class context
 comment0.params=op
-comment0.target=double\ evalOp(char)
+comment0.target=int\ precedence(char)
 comment1.params=ch
 comment1.target=boolean\ isOperator(char)
-comment2.params=s
-comment2.target=boolean\ wellBalanced(java.lang.String)
-comment3.params=args
-comment3.target=void\ main(java.lang.String[])
-numComments=4
+comment2.params=op
+comment2.target=double\ evalOp(char)
+comment3.params=s
+comment3.target=boolean\ wellBalanced(java.lang.String)
+comment4.params=s
+comment4.target=java.lang.String\ convertToParen(java.lang.String)
+comment5.params=expression
+comment5.target=java.lang.Double\ eval(java.lang.String)
+comment6.params=args
+comment6.target=void\ main(java.lang.String[])
+numComments=7

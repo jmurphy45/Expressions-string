@@ -22,7 +22,7 @@ public class PostFixEval
     private Stack<Double> opperandStack;
     private Stack<Character> opperatorStacK;
     /** The precedence of the operators mathces the order in Operators */
-    private static final int[] PRECENDENCE = {1,2,3,3,4,4,4};
+    private static final int[] PRECENDENCE = {1,1,5,3,3,4,4,4};
     /** Postfix string */
     private StringBuilder postfix;
     
@@ -103,7 +103,7 @@ public class PostFixEval
     }
     
     public String convertToParen(String s){
-        String ex;
+        String ex = "";
         for(int i = 0; i < s.length();i++){
             if(s.charAt(i) == '['){
                 ex += "(";
@@ -114,21 +114,19 @@ public class PostFixEval
             }else if(s.charAt(i) =='}'){
                 ex += ")";
             }else{
-                ex += i;
+                ex += "" + s.charAt(i);
             }
-       
         }
+        return ex;
     }
     
-    
-    public Double eval(String expression) throws SyntaxErrorException{
+    //throws SyntaxErrorException
+    public Double eval(String expression) throws SyntaxErrorException {
         //create an empty stack
         opperandStack = new Stack<Double>();
         opperatorStacK = new Stack<Character>();
-        char topOp = opperatorStacK.peek();
-        char op;
-        double rhs;
-        double lhs;
+        char topOp;
+        
         
         //process each token
         String[] tokens = expression.split("\\s+");
@@ -139,29 +137,45 @@ public class PostFixEval
             for(String nextToken : tokens){
                 char firstChar = nextToken.charAt(0);
                 //does it start with a digit?
+                topOp = opperatorStacK.peek();
                 if(Character.isDigit(firstChar)){
                     //get double value
                     Double value = Double.parseDouble(nextToken);
                     //push value onto opperand stack
                     opperandStack.push(value);
-                }else if (isOperator(firstChar)){
+                }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
                     //Eval the operator
                     double result = evalOp(firstChar);
                     //push result onto the opperand stack
                     if(!opperatorStacK.isEmpty()){
-                        opperandStack.push(result);
-                    }else{
-                        if((precedence(op) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                               while((precedence(op) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                                   double res = evalOp(opperatorStacK.peek());
-                                   opperandStack.pop();
-                                   opperandStack.pop();
-                                   opperandStack.push(res);
-                                }
-                          }else{
-                              //pop a;; stacked p[eratprs wotj equla or higher precedence than op
-                
-                          }
+                        //opperandStack.push(result);
+                    //}else{
+                    if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                           while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                               double res = evalOp(opperatorStacK.peek());
+                               opperandStack.pop();
+                               opperandStack.pop();
+                               opperandStack.push(res);
+                            }
+                      }else{
+                          //pop a;; stacked p[eratprs wotj equla or higher precedence than op
+            
+                      }
+                    }
+                }else if(isOperator(firstChar) && firstChar == '('){
+                    opperatorStacK.push(firstChar);
+                }else if(isOperator(firstChar) && firstChar == ')'){
+                    while(firstChar != '('){
+                        if(topOp != '('){
+                            double res = evalOp(firstChar);
+                            opperandStack.pop();
+                            opperandStack.pop();
+                            opperandStack.push(res);
+                        }
+                    }
+                    topOp = opperatorStacK.peek();
+                    if(topOp == '('){
+                        opperandStack.pop();
                     }
                 }else{
                     //invalid character
@@ -174,6 +188,7 @@ public class PostFixEval
             Double answer = opperandStack.pop();
             //opperand stack should be empty
             if(opperandStack.empty()){
+                System.out.println(answer);
                 return answer;
             }else{
                 //indicate error
@@ -186,44 +201,19 @@ public class PostFixEval
     }
     
     
-    public double evaluate(String s){
-        //create an empty stack
-        opperandStack = new Stack<Double>();
-        opperatorStacK = new Stack<Character>();
-        char topOp = opperatorStacK.peek();
-        double rhs;
-        double lhs;
-        
-        //process each token
-        String[] tokens = s.split("\\s+");
-        if(!wellBalanced(s)){
-            throw new SyntaxErrorException("Expression is not balanced Exception");
-        }else{
-            convertToParen(s);
-        }
+    public static void main(String[] args){
+        String s =  "{(5*7)+[7+(3+3)]}";
+        String s1 =  "{[5*7]+[7+(3+3)]}";
+        String s2 =  "{{5*7}+[7+(3+3)]}";
+        String b = "(5*7+(3+3";
+        System.out.println((new PostFixEval()).convertToParen(s));
+        System.out.println((new PostFixEval()).convertToParen(s1));
+        System.out.println((new PostFixEval()).convertToParen(s2));
         
         try{
-            char firstChar;
-            for(int i = 0; i < s.length();i++){
-                firstChar = s.charAt(i);
-                if(Character.isDigit(firstChar)){
-                    opperandStack.push((double)(firstChar));
-                }else if(firstChar.contains(OPERATORS)){
-                    if(!opperatorStacK.isEmpty && (precedence(op) > precedence(topOp))){
-                        while(!opperatorStacK.isEmpty && (precedence(op) > precedence(topOp))){
-                           evalOp(firstChar); 
-                        }
-                    }
-                }
-            }
-        }catch(EmptyStackException ex){
-
+            (new PostFixEval()).eval("5*6");
+        }catch(SyntaxErrorException e){
+            
         }
-    }
-    public static void main(String[] args){
-        String s =  "(5*7)+(3+3)";
-        String b = "(5*7+(3+3";
-        System.out.println((new PostFixEval()).wellBalanced(s));
-        (new PostFixEval()).eval("5*6");
     }
 }
