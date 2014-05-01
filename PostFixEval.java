@@ -1,3 +1,4 @@
+
 /**
  * Write a description of class PostFixEval here.
  * 
@@ -126,25 +127,34 @@ public class PostFixEval
         opperatorStacK = new Stack<Character>();
         char topOp;
         
-        
-        //process each token
+        //check if it is a well balanced expression
+        //else change all brackets to parans
         String[] tokens = expression.split("\\s+");
         if(!wellBalanced(expression)){
             throw new SyntaxErrorException("Expression is not balanced Exception");
+        }else{
+            expression = convertToParen(expression);
         }
+        
+        //process each token
         try{
             for(String nextToken : tokens){
                 char firstChar = nextToken.charAt(0);
                 //does it start with a digit?
-                topOp = opperatorStacK.peek();
+                
+                //topOp = opperatorStacK.peek();
+                
                 if(Character.isDigit(firstChar)){
                     //get double value
                     Double value = Double.parseDouble(nextToken);
                     //push value onto opperand stack
                     opperandStack.push(value);
+                    System.out.println(opperandStack.peek());
                 }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
                     //Eval the operator
                     double result = evalOp(firstChar);
+                    opperatorStacK.push(firstChar);
+                    topOp = opperatorStacK.peek();
                     //push result onto the opperand stack
                     if(!opperatorStacK.isEmpty()){
                         //opperandStack.push(result);
@@ -155,6 +165,7 @@ public class PostFixEval
                                opperandStack.pop();
                                opperandStack.pop();
                                opperandStack.push(res);
+                               System.out.println(opperandStack.peek());
                             }
                       }else{
                           //pop a;; stacked p[eratprs wotj equla or higher precedence than op
@@ -164,19 +175,17 @@ public class PostFixEval
                 }else if(isOperator(firstChar) && firstChar == '('){
                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == ')'){
-                    while(firstChar != '('){
+                    topOp = opperatorStacK.peek();
+                    while(opperatorStacK.peek() != '('){
                         if(topOp != '('){
                             double res = evalOp(firstChar);
                             opperandStack.pop();
                             opperandStack.pop();
                             opperandStack.push(res);
+                            System.out.println(opperandStack.peek());
                         }
                     }
-<<<<<<< HEAD
                     topOp = opperatorStacK.peek();
-=======
-                    
->>>>>>> FETCH_HEAD
                     if(topOp == '('){
                         opperandStack.pop();
                     }
@@ -195,10 +204,12 @@ public class PostFixEval
                 return answer;
             }else{
                 //indicate error
+                
                 throw new SyntaxErrorException("Syntax Error: " + "Stack should be empty");
             }
         }catch(EmptyStackException ex){
             //pop was attemptedon empty stack
+             System.out.println("Throwing error in empty stack exception");
              throw new SyntaxErrorException("Invalid character encountered: the stack is empty");
         }
     }
@@ -208,19 +219,11 @@ public class PostFixEval
         String s =  "{(5*7)+[7+(3+3)]}";
         String s1 =  "{[5*7]+[7+(3+3)]}";
         String s2 =  "{{5*7}+[7+(3+3)]}";
-        String b = "(5*7+(3+3";
-        System.out.println((new PostFixEval()).convertToParen(s));
-        System.out.println((new PostFixEval()).convertToParen(s1));
-        System.out.println((new PostFixEval()).convertToParen(s2));
-<<<<<<< HEAD
-=======
-        //(new PostFixEval()).eval("5*6");
->>>>>>> FETCH_HEAD
         
         try{
-            (new PostFixEval()).eval("5*6");
+            System.out.println((new PostFixEval()).eval("8.0*(9-2)"));
         }catch(SyntaxErrorException e){
-            
+            System.out.println("Error");
         }
     }
 }
