@@ -1,12 +1,5 @@
-
-/**
- * Write a description of class PostFixEval here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 import java.util.*;
-public class PostFixEval
+public class infix
 {
     // instance variables - replace the example below with your own
     //nested class
@@ -97,9 +90,24 @@ public class PostFixEval
                 }
             }
         }
+        
         if(parensStack.empty())
             return true;
         return false;
+    }
+    
+    
+    public String formatString(String s){
+        String ex = "";
+        
+        for(int i = 0; i < s.length();i++){
+            if(s.charAt(i) == ' '){
+                ex += "";
+            }else{
+                ex += s.charAt(i) + " ";
+            }
+        }
+        return ex;
     }
     
     public String convertToParen(String s){
@@ -129,12 +137,14 @@ public class PostFixEval
         
         //check if it is a well balanced expression
         //else change all brackets to parans
-        String[] tokens = expression.split("\\s+");
+        
         if(!wellBalanced(expression)){
             throw new SyntaxErrorException("Expression is not balanced Exception");
         }else{
             expression = convertToParen(expression);
+            expression = formatString(expression);
         }
+        String[] tokens = expression.split("\\s+");
         
         //process each token
         try{
@@ -144,33 +154,19 @@ public class PostFixEval
                 //topOp = opperatorStacK.peek();
                 
                 if(Character.isDigit(firstChar) && !isOperator(firstChar)){
-                    //get double value
                     Double value = Double.parseDouble(nextToken);
-                    //push value onto opperand stack
                     opperandStack.push(value);
-                    System.out.println(opperandStack.peek());
                 }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
-                    //Eval the operator
-                    double result = evalOp(firstChar);
-                    opperatorStacK.push(firstChar);
-                    topOp = opperatorStacK.peek();
-                    //push result onto the opperand stack
-                    if(!opperatorStacK.isEmpty()){
-                        opperandStack.push(result);
-                    }else{
-                    if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                           while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                               double res = evalOp(opperatorStacK.peek());
-                               opperandStack.pop();
-                               opperandStack.pop();
-                               opperandStack.push(res);
-                               System.out.println(opperandStack.peek());
-                            }
-                      }else{
-                          //pop a;; stacked p[eratprs wotj equla or higher precedence than op
-            
-                      }
-                    }
+                     topOp = opperatorStacK.peek();
+                     while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                         double res = evalOp(opperatorStacK.peek());
+                         opperandStack.pop();
+                         opperandStack.pop();
+                         opperandStack.push(res);
+                         System.out.println(opperandStack.peek());
+                         opperatorStacK.pop();
+                         System.out.println(opperandStack.peek());
+                     }
                 }else if(isOperator(firstChar) && firstChar == '('){
                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == ')'){
@@ -184,10 +180,7 @@ public class PostFixEval
                             System.out.println(opperandStack.peek());
                         }
                     }
-                    topOp = opperatorStacK.peek();
-                    if(topOp == '('){
-                        opperandStack.pop();
-                    }
+                    opperatorStacK.pop();
                 }else{
                     //invalid character
                     throw new SyntaxErrorException("Invalid character encountered: " + firstChar);
@@ -218,11 +211,18 @@ public class PostFixEval
         String s =  "{(5*7)+[7+(3+3)]}";
         String s1 =  "{[5*7]+[7+(3+3)]}";
         String s2 =  "{{5*7}+[7+(3+3)]}";
+        String s3 = "( 5.054567    + 7   + 6.0007  ) +  8  ";
+        System.out.println((new infix()).formatString(s3));
+        String[] tokens = s3.split("\\s+");
         
-        try{
-            System.out.println((new PostFixEval()).eval("8 * (9 - 2 )"));
-        }catch(SyntaxErrorException e){
-            System.out.println("Error");
-        }
+        System.out.println(tokens[0]);
+        System.out.println(tokens[1]);
+        System.out.println(tokens[2]);
+        System.out.println(tokens[3]);
+        System.out.println(tokens[4]);
+        System.out.println(tokens[5]);
+        System.out.println(tokens[6]);
+        
+ 
     }
 }
