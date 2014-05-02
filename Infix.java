@@ -1,5 +1,5 @@
 import java.util.*;
-public class infix
+public class Infix
 {
     // instance variables - replace the example below with your own
     //nested class
