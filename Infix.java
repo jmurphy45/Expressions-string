@@ -212,7 +212,7 @@ public class Infix
         String s1 =  "{[5*7]+[7+(3+3)]}";
         String s2 =  "{{5*7}+[7+(3+3)]}";
         String s3 = "( 5.054567    + 7   + 6.0007  ) +  8  ";
-        System.out.println((new infix()).formatString(s3));
+        System.out.println((new Infix()).formatString(s3));
         String[] tokens = s3.split("\\s+");
         
         System.out.println(tokens[0]);
