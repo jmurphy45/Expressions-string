@@ -1,5 +1,11 @@
+/**
+ * Write a description of class PostFixEval here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
 import java.util.*;
-public class Infix
+public class PostFixEval
 {
     // instance variables - replace the example below with your own
     //nested class
@@ -160,27 +166,16 @@ public class Infix
                     opperandStack.push(value);
                     System.out.println(opperandStack.peek());
                 }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
-                    //Eval the operator
-                    double result = evalOp(firstChar);
                     opperatorStacK.push(firstChar);
                     topOp = opperatorStacK.peek();
                     //push result onto the opperand stack
-                    if(!opperatorStacK.isEmpty()){
-                        opperandStack.push(result);
-                    }
-                    if((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
-                           while((precedence(firstChar) > precedence(topOp)) && !opperatorStacK.isEmpty()){
+                    if((precedence(firstChar) < precedence(topOp)) && !opperatorStacK.isEmpty()){
+                           while((precedence(firstChar) < precedence(topOp)) && !opperatorStacK.isEmpty()){
                                double res = evalOp(opperatorStacK.peek());
-                               opperandStack.pop();
-                               opperandStack.pop();
                                opperandStack.push(res);
                                System.out.println(opperandStack.peek());
                             }
-                      }else{
-                          //pop a;; stacked p[eratprs wotj equla or higher precedence than op
-            
                       }
-                    
                 }else if(isOperator(firstChar) && firstChar == '('){
                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == ')'){
@@ -188,8 +183,6 @@ public class Infix
                     while(opperatorStacK.peek() != '('){
                         if(topOp != '('){
                             double res = evalOp(firstChar);
-                            opperandStack.pop();
-                            opperandStack.pop();
                             opperandStack.push(res);
                             System.out.println(opperandStack.peek());
                         }
@@ -229,6 +222,11 @@ public class Infix
         String s1 =  "{[5*7]+[7+(3+3)]}";
         String s2 =  "{{5*7}+[7+(3+3)]}";
         String s3 = "( 5    + 7  ) +  8  ";
+        
+        Stack<Double> a = new Stack<Double>();
+        a.push(7.);
+        a.push(5.45);
+        System.out.println(a.size());
         
         System.out.println((new PostFixEval()).isOperator('^'));
         System.out.println((new PostFixEval()).formatString(s3));
