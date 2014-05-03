@@ -186,7 +186,7 @@ public class PostFixEval
                         System.out.println("fooo");
                         
                            while((precedence(firstChar) < precedence(topOp)) && !opperatorStacK.isEmpty()){
-                               double res = evalOp(opperatorStacK.peek());
+                               double res = evalOp(topOp);
                                opperandStack.push(res);
                                System.out.println(opperandStack.peek());
                             }
@@ -199,7 +199,7 @@ public class PostFixEval
                     System.out.println("fo00o");
                     while(opperatorStacK.peek() != '('){
                         if(topOp != '('){
-                            double res = evalOp(firstChar);
+                            double res = evalOp(topOp);
                             opperandStack.push(res);
                             System.out.println(opperandStack.peek());
                         }
@@ -219,13 +219,11 @@ public class PostFixEval
             
             
             if(opperatorStacK.size() == 1 && opperandStack.size() == 2){
-                return evalOp(opperatorStacK.pop());
+                return evalOp(opperatorStacK.peek());
             }
-            Double answer = opperandStack.pop();
             //opperand stack should be empty
             if(opperatorStacK.empty()){
-                System.out.println(answer);
-                return answer;
+                return opperandStack.peek();
             }else{
                 //indicate error
                 throw new SyntaxErrorException("Syntax Error: " + "Stack should be empty");
@@ -251,10 +249,10 @@ public class PostFixEval
         System.out.println(a.size());
         
         System.out.println((new PostFixEval()).isOperator('^'));
-        System.out.println((new PostFixEval()).formatString(s3));
+        System.out.println((new PostFixEval()).formatString("99+8"));
         
         try{
-            System.out.println((new PostFixEval()).eval("9+4"));
+            System.out.println((new PostFixEval()).eval("(9+4)"));
         }catch(SyntaxErrorException e){
             System.out.println("Error");
         }
