@@ -114,8 +114,8 @@ public class PostFixEval
         String ex = "";
         
         for(int i = 0; i < s.length();i++){
-            if(s.charAt(i) == ' '){
-                ex += "";
+            if(s.charAt(i) == '+' || s.charAt(i) == '-' || s.charAt(i) == '*' || s.charAt(i) == '/' || s.charAt(i) == '%' || s.charAt(i) == '^' ){
+                ex += " " + (s.charAt(i)) + " ";
             }else{
                 ex += s.charAt(i) + " ";
             }
@@ -173,23 +173,33 @@ public class PostFixEval
                     opperandStack.push(value);
                     System.out.println(opperandStack.peek());
                 }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
-                    opperatorStacK.push(firstChar);
+                    if(opperatorStacK.empty()){
+                        opperatorStacK.push(firstChar);
+                    }
                     topOp = opperatorStacK.peek();
+                    System.out.println("foo");
                     //push result onto the opperand stack
-                    if((precedence(firstChar) < precedence(topOp)) && !opperatorStacK.isEmpty() && opperandStack.size() < 2 ){
+                    if((precedence(firstChar) <= precedence(topOp)) && !opperatorStacK.isEmpty() && opperandStack.size() >= 2 ){
+                        System.out.println("fooo");
+                        
                            while((precedence(firstChar) < precedence(topOp)) && !opperatorStacK.isEmpty()){
                                double res = evalOp(opperatorStacK.peek());
                                opperandStack.push(res);
                                System.out.println(opperandStack.peek());
                             }
+                            opperatorStacK.push(firstChar);
                       }
-                    if(opperatorStacK.size() < 2 && firstChar != '(' && firstChar != ')' ){
+                    if(opperandStack.size() < 2 && firstChar != '(' && firstChar != ')' ){
                         opperatorStacK.push(firstChar);
+                        System.out.println(opperatorStacK.peek());
+                        System.out.println("foooo");
                     }
+                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == '('){
                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == ')'){
                     topOp = opperatorStacK.peek();
+                    System.out.println("fo00o");
                     while(opperatorStacK.peek() != '('){
                         if(topOp != '('){
                             double res = evalOp(firstChar);
@@ -197,6 +207,7 @@ public class PostFixEval
                             System.out.println(opperandStack.peek());
                         }
                     }
+         
                     topOp = opperatorStacK.peek();
                     if(topOp == '('){
                         opperandStack.pop();
@@ -209,6 +220,10 @@ public class PostFixEval
            
             }//end for
             
+            
+            if(opperatorStacK.size() == 1 && opperandStack.size() == 2){
+                return evalOp(opperatorStacK.pop());
+            }
             Double answer = opperandStack.pop();
             //opperand stack should be empty
             if(opperatorStacK.empty()){
@@ -242,7 +257,7 @@ public class PostFixEval
         System.out.println((new PostFixEval()).formatString(s3));
         
         try{
-            System.out.println((new PostFixEval()).eval("8 * 9"));
+            System.out.println((new PostFixEval()).eval("9+4"));
         }catch(SyntaxErrorException e){
             System.out.println("Error");
         }
