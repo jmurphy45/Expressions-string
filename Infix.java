@@ -63,6 +63,7 @@ public class PostFixEval
             case '%' : result = lhs % rhs;
                 break;
         }
+        opperatorStacK.pop();
         return result;
     }
     
@@ -173,8 +174,10 @@ public class PostFixEval
                     opperandStack.push(value);
                     System.out.println(opperandStack.peek());
                 }else if (isOperator(firstChar) && firstChar != '(' && firstChar != ')' ){
-                    if(opperatorStacK.empty()){
+                    if((opperandStack.size() < 2 && firstChar != '(' && firstChar != ')') || opperatorStacK.empty()){
                         opperatorStacK.push(firstChar);
+                        System.out.println(opperatorStacK.peek());
+                        System.out.println("foooo");
                     }
                     topOp = opperatorStacK.peek();
                     System.out.println("foo");
@@ -189,12 +192,6 @@ public class PostFixEval
                             }
                             opperatorStacK.push(firstChar);
                       }
-                    if(opperandStack.size() < 2 && firstChar != '(' && firstChar != ')' ){
-                        opperatorStacK.push(firstChar);
-                        System.out.println(opperatorStacK.peek());
-                        System.out.println("foooo");
-                    }
-                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == '('){
                     opperatorStacK.push(firstChar);
                 }else if(isOperator(firstChar) && firstChar == ')'){
