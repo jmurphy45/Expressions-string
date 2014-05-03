@@ -115,7 +115,7 @@ public class PostFixEval
         String ex = "";
         
         for(int i = 0; i < s.length();i++){
-            if(s.charAt(i) == '+' || s.charAt(i) == '-' || s.charAt(i) == '*' || s.charAt(i) == '/' || s.charAt(i) == '%' || s.charAt(i) == '^' ){
+            if(s.charAt(i) == '+' || s.charAt(i) == '-' || s.charAt(i) == '*' || s.charAt(i) == '/' || s.charAt(i) == '%' || s.charAt(i) == '^'){
                 ex += " " + (s.charAt(i)) + " ";
             }else{
                 ex += s.charAt(i) + " ";
@@ -224,6 +224,13 @@ public class PostFixEval
             //opperand stack should be empty
             if(opperatorStacK.empty()){
                 return opperandStack.peek();
+            }else if(!opperatorStacK.empty()){
+                double r =0.;
+                while(!opperatorStacK.empty()){
+                    topOp = opperatorStacK.peek();
+                    r = evalOp(topOp);
+                }
+                return r;
             }else{
                 //indicate error
                 throw new SyntaxErrorException("Syntax Error: " + "Stack should be empty");
@@ -252,7 +259,7 @@ public class PostFixEval
         System.out.println((new PostFixEval()).formatString("99+8"));
         
         try{
-            System.out.println((new PostFixEval()).eval("(9+4)"));
+            System.out.println((new PostFixEval()).eval("9+4+6"));
         }catch(SyntaxErrorException e){
             System.out.println("Error");
         }
