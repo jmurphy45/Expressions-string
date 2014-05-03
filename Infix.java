@@ -1,5 +1,12 @@
 /**
- * Write a description of class PostFixEval here.
+ * Maintain two stacks, one for operands and one for operators/parentheses.
+* 2. Scan the infix expression one token at a time, from left to right. Here a “token” is defined as an operand,
+*operator, or parentheses symbol.
+*a. If the token is an operand, push it onto the operand stack.
+*b. If the token is an operator or a parentheses symbol, handle it as described in the infix to postfix
+*conversion algorithm. Every time you pop a non-parentheses operator off the operator stack, also pop the top two elements off the operand stack, perform the indicated operation, and push the result back onto the operand stack.
+*3. Once all tokens in the infix expression have been scanned, pop the remaining operators off the operator stack while also modifying the operand stack as described in step (2b).
+*4. The final result will be the top (and only) element left on the operand stack at the end.
  * 
  * @author (your name) 
  * @version (a version number or a date)
